@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumina | Modern Fine Dining</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        gold: {
+                            400: '#fbbf24',
+                            500: '#d4af37', // Metallic gold
+                            600: '#aa8c2c',
+                        },
+                        dark: {
+                            800: '#1f2937',
+                            900: '#111827',
+                            950: '#0a0a0a', // Deepest black
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    backgroundImage: {
+                        'hero-pattern': "linear-gradient(to right bottom, rgba(10, 10, 10, 0.8), rgba(10, 10, 10, 0.6)), url('https://images.unsplash.com/photo-1514933651103-005eec06c04b?auto=format&fit=crop&w=1920&q=80')",
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 5px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #aa8c2c;
+        }
+
+        /* Scroll Reveal Animation Classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+
+        /* Image hover zoom effect */
+        .img-zoom-container {
+            overflow: hidden;
+        }
+        .img-zoom-container img {
+            transition: transform 0.7s ease;
+        }
+        .img-zoom-container:hover img {
+            transform: scale(1.08);
+        }
+        
+        /* Loading screen */
+        #loader {
+            transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-dark-950 text-gray-300 font-sans antialiased overflow-x-hidden selection:bg-gold-500 selection:text-dark-950">
+
+    <div id="loader" class="fixed inset-0 z-[100] bg-dark-950 flex flex-col items-center justify-center">
+        <div class="text-gold-500 text-4xl font-serif font-bold mb-4 animate-pulse">Lumina</div>
+        <div class="w-16 h-1 bg-gray-800 rounded-full overflow-hidden">
+            <div class="h-full bg-gold-500 w-full origin-left animate-[scale-x_1s_ease-in-out_infinite]"></div>
+        </div>
+    </div>
+
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-6 px-6 lg:px-16 bg-transparent">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <!-- Logo -->
+            <a href="#" class="text-2xl font-serif font-bold text-white tracking-widest flex items-center gap-2">
+                <i class="fa-solid fa-star-of-life text-gold-500 text-sm"></i>
+                LUMINA
+            </a>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="#home" class="text-sm uppercase tracking-wider text-white hover:text-gold-500 transition-colors">Home</a>
+                <a href="#about" class="text-sm uppercase tracking-wider text-white hover:text-gold-500 transition-colors">Story</a>
+                <a href="#menu" class="text-sm uppercase tracking-wider text-white hover:text-gold-500 transition-colors">Menu</a>
+                <a href="#reservation" class="text-sm uppercase tracking-wider text-gold-500 border border-gold-500 px-6 py-2 rounded-full hover:bg-gold-500 hover:text-dark-950 transition-all duration-300">Book a Table</a>
+            </div>
+
+            <!-- Mobile Menu Button -->
+            <button id="mobile-menu-btn" class="md:hidden text-white text-2xl focus:outline-none">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobile-menu" class="absolute top-full left-0 w-full bg-dark-900 border-t border-gray-800 hidden flex-col items-center py-6 space-y-6 shadow-2xl transition-all">
+            <a href="#home" class="mobile-link text-lg text-white hover:text-gold-500">Home</a>
+            <a href="#about" class="mobile-link text-lg text-white hover:text-gold-500">Story</a>
+            <a href="#menu" class="mobile-link text-lg text-white hover:text-gold-500">Menu</a>
+            <a href="#reservation" class="mobile-link text-lg text-gold-500 border border-gold-500 px-8 py-3 rounded-full">Book a Table</a>
+        </div>
+    </nav>
+
+    <section id="home" class="relative h-screen flex items-center justify-center bg-hero-pattern bg-cover bg-center bg-no-repeat bg-fixed">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-dark-950/50 to-dark-950"></div>
+        
+        <div class="relative z-10 text-center px-4 max-w-4xl mx-auto reveal active">
+            <p class="text-gold-500 font-serif italic text-xl md:text-2xl mb-4">Experience the art of fine dining</p>
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-bold text-white mb-6 leading-tight">
+                Taste the <br/> Extraordinary
+            </h1>
+            <p class="text-gray-300 text-lg md:text-xl max-w-2xl mx-auto mb-10 font-light">
+                A culinary journey blending contemporary techniques with timeless flavors, crafted for the discerning palate.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <a href="#menu" class="bg-gold-500 text-dark-950 px-8 py-4 rounded-full font-medium tracking-wide hover:bg-white hover:text-dark-950 transition-all duration-300 w-full sm:w-auto text-center">
+                    Discover Menu
+                </a>
+                <a href="#reservation" class="border border-white text-white px-8 py-4 rounded-full font-medium tracking-wide hover:border-gold-500 hover:text-gold-500 transition-all duration-300 w-full sm:w-auto text-center">
+                    Make a Reservation
+                </a>
+            </div>
+        </div>
+        
+        <!-- Scroll down indicator -->
+        <a href="#about" class="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 hover:text-gold-500 transition-colors animate-bounce">
+            <i class="fa-solid fa-arrow-down text-2xl"></i>
+        </a>
+    </section>
+
+    <section id="about" class="py-24 px-6 lg:px-16 max-w-7xl mx-auto">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            
+            <div class="reveal">
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="w-12 h-[1px] bg-gold-500"></div>
+                    <span class="text-gold-500 uppercase tracking-widest text-sm font-semibold">Our Story</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-serif text-white mb-6 leading-snug">
+                    A Passion for <span class="italic text-gray-400">Culinary</span> Excellence.
+                </h2>
+                <p class="text-gray-400 mb-6 leading-relaxed font-light">
+                    Founded in 2026, Lumina was born from a singular vision: to redefine modern dining through a harmonious blend of locally sourced ingredients and avant-garde techniques. 
+                </p>
+                <p class="text-gray-400 mb-8 leading-relaxed font-light">
+                    Our Michelin-starred executive chef meticulously crafts each dish to tell a story, invoking memories and creating new ones. The ambiance is designed to transport you, ensuring every visit is an unforgettable sensory experience.
+                </p>
+                
+                <div class="flex items-center gap-6">
+                    <img src="https://ui-avatars.com/api/?name=Executive+Chef&background=d4af37&color=fff&size=64&rounded=true" alt="Chef Signature" class="w-16 h-16 rounded-full border-2 border-gray-800" onerror="this.src='https://placehold.co/64x64/d4af37/fff?text=Chef'">
+                    <div>
+                        <p class="text-white font-serif text-xl">Alexander Pierce</p>
+                        <p class="text-gold-500 text-sm">Executive Chef</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="relative reveal delay-200">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="img-zoom-container rounded-2xl h-64 md:h-80 mt-8">
+                        <img src="https://images.unsplash.com/photo-1600891964092-4316c288032e?auto=format&fit=crop&w=600&q=80" alt="Restaurant Interior" class="w-full h-full object-cover rounded-2xl" onerror="this.src='https://placehold.co/600x800/1f2937/d4af37?text=Interior'">
+                    </div>
+                    <div class="img-zoom-container rounded-2xl h-64 md:h-80">
+                        <img src="https://images.unsplash.com/photo-1577106263724-2c8e03bfe9cf?auto=format&fit=crop&w=600&q=80" alt="Chef Cooking" class="w-full h-full object-cover rounded-2xl" onerror="this.src='https://placehold.co/600x800/1f2937/d4af37?text=Cooking'">
+                    </div>
+                </div>
+                <!-- Decorative element -->
+                <div class="absolute -z-10 -bottom-6 -right-6 w-32 h-32 border border-gold-500/30 rounded-full"></div>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="menu" class="py-24 bg-dark-900">
+        <div class="max-w-7xl mx-auto px-6 lg:px-16">
+            
+            <div class="text-center mb-16 reveal">
+                <span class="text-gold-500 uppercase tracking-widest text-sm font-semibold mb-3 block">Discover</span>
+                <h2 class="text-4xl md:text-5xl font-serif text-white">Featured Delicacies</h2>
+                <div class="w-24 h-[1px] bg-gold-500 mx-auto mt-6"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                
+                <!-- Menu Item 1 -->
+                <div class="bg-dark-950 rounded-2xl overflow-hidden group reveal">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1544025162-831518f8e7ee?auto=format&fit=crop&w=800&q=80" alt="Truffle Wagyu" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/800x600/1f2937/fff?text=Dish'">
+                        <div class="absolute top-4 right-4 bg-dark-950/80 backdrop-blur-sm text-gold-500 px-4 py-1 rounded-full font-serif font-medium border border-gold-500/20">$65</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif text-white mb-2 group-hover:text-gold-500 transition-colors">Truffle Wagyu Ribeye</h3>
+                        <p class="text-gray-400 font-light text-sm line-clamp-2">A5 grade Wagyu, wild mushroom duxelles, shaved black truffle, and a rich red wine reduction.</p>
+                    </div>
+                </div>
+
+                <!-- Menu Item 2 -->
+                <div class="bg-dark-950 rounded-2xl overflow-hidden group reveal delay-100">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1559314809-0d155014e29e?auto=format&fit=crop&w=800&q=80" alt="Lobster Linguine" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/800x600/1f2937/fff?text=Dish'">
+                        <div class="absolute top-4 right-4 bg-dark-950/80 backdrop-blur-sm text-gold-500 px-4 py-1 rounded-full font-serif font-medium border border-gold-500/20">$48</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif text-white mb-2 group-hover:text-gold-500 transition-colors">Saffron Lobster Linguine</h3>
+                        <p class="text-gray-400 font-light text-sm line-clamp-2">Handmade pasta, butter-poached Maine lobster tails, cherry tomatoes, and a delicate saffron bisque.</p>
+                    </div>
+                </div>
+
+                <!-- Menu Item 3 -->
+                <div class="bg-dark-950 rounded-2xl overflow-hidden group reveal delay-200">
+                    <div class="h-64 overflow-hidden relative">
+                        <img src="https://images.unsplash.com/photo-1600803907087-f56d462fd26b?auto=format&fit=crop&w=800&q=80" alt="Smoked Duck" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" onerror="this.src='https://placehold.co/800x600/1f2937/fff?text=Dish'">
+                        <div class="absolute top-4 right-4 bg-dark-950/80 backdrop-blur-sm text-gold-500 px-4 py-1 rounded-full font-serif font-medium border border-gold-500/20">$42</div>
+                    </div>
+                    <div class="p-8">
+                        <h3 class="text-2xl font-serif text-white mb-2 group-hover:text-gold-500 transition-colors">Cherrywood Smoked Duck</h3>
+                        <p class="text-gray-400 font-light text-sm line-clamp-2">Pan-seared duck breast, parsnip purée, pickled blackberries, and an intricate honey-thyme glaze.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="text-center mt-12 reveal delay-300">
+                <a href="#" class="inline-flex items-center gap-2 text-gold-500 hover:text-white transition-colors border-b border-gold-500 pb-1">
+                    View Full Menu <i class="fa-solid fa-arrow-right text-sm"></i>
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <section id="reservation" class="py-24 relative">
+        <!-- Background Image Parallax effect -->
+        <div class="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1414235077428-338989a2e8c0?auto=format&fit=crop&w=1920&q=80')] bg-cover bg-center bg-fixed opacity-10"></div>
+        
+        <div class="max-w-4xl mx-auto px-6 lg:px-16 relative z-10">
+            <div class="bg-dark-900/80 backdrop-blur-xl border border-gray-800 p-8 md:p-12 rounded-3xl shadow-2xl reveal">
+                
+                <div class="text-center mb-10">
+                    <h2 class="text-3xl md:text-4xl font-serif text-white mb-4">Book Your Table</h2>
+                    <p class="text-gray-400 font-light">Secure your spot for an unforgettable evening. We recommend booking at least two weeks in advance.</p>
+                </div>
+
+                <form id="reservation-form" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <!-- Name Input -->
+                        <div class="space-y-2">
+                            <label class="text-sm text-gray-400 pl-2">Full Name</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                <input type="text" required class="w-full bg-dark-950 border border-gray-800 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold-500 transition-colors placeholder-gray-600" placeholder="John Doe">
+                            </div>
+                        </div>
+
+                        <!-- Phone Input -->
+                        <div class="space-y-2">
+                            <label class="text-sm text-gray-400 pl-2">Phone Number</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-phone absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                <input type="tel" required class="w-full bg-dark-950 border border-gray-800 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold-500 transition-colors placeholder-gray-600" placeholder="+1 (555) 000-0000">
+                            </div>
+                        </div>
+
+                        <!-- Date Input -->
+                        <div class="space-y-2">
+                            <label class="text-sm text-gray-400 pl-2">Date</label>
+                            <div class="relative">
+                                <i class="fa-regular fa-calendar absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                <input type="date" required class="w-full bg-dark-950 border border-gray-800 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold-500 transition-colors" style="color-scheme: dark;">
+                            </div>
+                        </div>
+
+                        <!-- Guests Input -->
+                        <div class="space-y-2">
+                            <label class="text-sm text-gray-400 pl-2">Number of Guests</label>
+                            <div class="relative">
+                                <i class="fa-solid fa-user-group absolute left-4 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                                <select required class="w-full bg-dark-950 border border-gray-800 rounded-xl py-3 pl-12 pr-4 text-white focus:outline-none focus:border-gold-500 transition-colors appearance-none">
+                                    <option value="" disabled selected>Select guests...</option>
+                                    <option value="1">1 Person</option>
+                                    <option value="2">2 People</option>
+                                    <option value="3">3 People</option>
+                                    <option value="4">4 People</option>
+                                    <option value="5">5+ People</option>
+                                </select>
+                                <i class="fa-solid fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none text-sm"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Special Requests -->
+                    <div class="space-y-2">
+                        <label class="text-sm text-gray-400 pl-2">Special Requests (Optional)</label>
+                        <textarea rows="3" class="w-full bg-dark-950 border border-gray-800 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-gold-500 transition-colors placeholder-gray-600 resize-none" placeholder="Allergies, anniversaries, window seat preference..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-gold-500 text-dark-950 font-semibold py-4 rounded-xl hover:bg-gold-400 transition-colors shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                        Confirm Reservation
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Custom Modal for form submission (instead of alert) -->
+    <div id="success-modal" class="fixed inset-0 z-[100] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center opacity-0 transition-opacity duration-300">
+        <div class="bg-dark-900 border border-gold-500/30 p-8 md:p-10 rounded-2xl max-w-sm w-full mx-4 text-center transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="w-16 h-16 bg-gold-500/20 text-gold-500 rounded-full flex items-center justify-center mx-auto mb-6">
+                <i class="fa-solid fa-check text-2xl"></i>
+            </div>
+            <h3 class="text-2xl font-serif text-white mb-2">Request Sent!</h3>
+            <p class="text-gray-400 text-sm mb-8">We have received your reservation request. Our team will contact you shortly to confirm.</p>
+            <button id="close-modal-btn" class="w-full border border-gold-500 text-gold-500 py-3 rounded-xl hover:bg-gold-500 hover:text-dark-950 transition-colors">
+                Return to Website
+            </button>
+        </div>
+    </div>
+
+    <footer class="bg-dark-950 border-t border-gray-900 pt-20 pb-10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-16">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+                
+                <!-- Brand Info -->
+                <div class="lg:col-span-1">
+                    <a href="#" class="text-2xl font-serif font-bold text-white tracking-widest flex items-center gap-2 mb-6">
+                        <i class="fa-solid fa-star-of-life text-gold-500 text-sm"></i>
+                        LUMINA
+                    </a>
+                    <p class="text-gray-400 text-sm leading-relaxed mb-6">
+                        Elevating culinary traditions into modern masterpieces. Experience fine dining at its absolute peak.
+                    </p>
+                    <div class="flex gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:bg-gray-800 transition-all">
+                            <i class="fa-brands fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:bg-gray-800 transition-all">
+                            <i class="fa-brands fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full bg-dark-900 flex items-center justify-center text-gray-400 hover:text-gold-500 hover:bg-gray-800 transition-all">
+                            <i class="fa-brands fa-x-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Links -->
+                <div>
+                    <h4 class="text-white font-serif text-lg mb-6">Explore</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#home" class="text-gray-400 hover:text-gold-500 text-sm transition-colors">Home</a></li>
+                        <li><a href="#about" class="text-gray-400 hover:text-gold-500 text-sm transition-colors">Our Story</a></li>
+                        <li><a href="#menu" class="text-gray-400 hover:text-gold-500 text-sm transition-colors">Menus</a></li>
+                        <li><a href="#reservation" class="text-gray-400 hover:text-gold-500 text-sm transition-colors">Reservations</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-gold-500 text-sm transition-colors">Gift Cards</a></li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div>
+                    <h4 class="text-white font-serif text-lg mb-6">Contact</h4>
+                    <ul class="space-y-4 text-sm text-gray-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-location-dot mt-1 text-gold-500"></i>
+                            <span>123 Culinary Avenue, Suite 400<br>New York, NY 10012</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-gold-500"></i>
+                            <span>+1 (212) 555-0192</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-envelope text-gold-500"></i>
+                            <span>reservations@luminarestaurant.com</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Hours -->
+                <div>
+                    <h4 class="text-white font-serif text-lg mb-6">Opening Hours</h4>
+                    <ul class="space-y-3 text-sm text-gray-400">
+                        <li class="flex justify-between border-b border-gray-800 pb-2">
+                            <span>Mon - Thu</span>
+                            <span>5:00 PM - 10:30 PM</span>
+                        </li>
+                        <li class="flex justify-between border-b border-gray-800 pb-2">
+                            <span>Fri - Sat</span>
+                            <span>5:00 PM - 11:30 PM</span>
+                        </li>
+                        <li class="flex justify-between border-b border-gray-800 pb-2">
+                            <span>Sunday</span>
+                            <span>4:00 PM - 9:30 PM</span>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="border-t border-gray-900 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <p class="text-gray-500 text-sm">
+                    &copy; <span id="year"></span> Lumina Restaurant. All rights reserved.
+                </p>
+                <div class="flex gap-4 text-sm text-gray-500">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // 1. Remove Loader
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.style.opacity = '0';
+                setTimeout(() => {
+                    loader.style.visibility = 'hidden';
+                    loader.remove();
+                }, 500);
+            }, 800); // Small artificial delay for effect
+
+            // 2. Set Current Year in Footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // 3. Navbar scroll effect
+            const navbar = document.getElementById('navbar');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    navbar.classList.remove('py-6', 'bg-transparent');
+                    navbar.classList.add('py-4', 'bg-dark-950/95', 'backdrop-blur-md', 'shadow-lg');
+                } else {
+                    navbar.classList.add('py-6', 'bg-transparent');
+                    navbar.classList.remove('py-4', 'bg-dark-950/95', 'backdrop-blur-md', 'shadow-lg');
+                }
+            });
+
+            // 4. Mobile Menu Toggle
+            const mobileBtn = document.getElementById('mobile-menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileLinks = document.querySelectorAll('.mobile-link');
+            
+            let isMenuOpen = false;
+
+            function toggleMenu() {
+                isMenuOpen = !isMenuOpen;
+                if (isMenuOpen) {
+                    mobileMenu.classList.remove('hidden');
+                    mobileMenu.classList.add('flex');
+                    // Change icon to X
+                    mobileBtn.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                } else {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                    // Change icon back to bars
+                    mobileBtn.innerHTML = '<i class="fa-solid fa-bars"></i>';
+                }
+            }
+
+            mobileBtn.addEventListener('click', toggleMenu);
+            mobileLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if(isMenuOpen) toggleMenu();
+                });
+            });
+
+            // 5. Scroll Reveal Animation using Intersection Observer
+            const revealElements = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) {
+                        return;
+                    } else {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Run once
+                    }
+                });
+            }, revealOptions);
+
+            revealElements.forEach(el => {
+                revealOnScroll.observe(el);
+            });
+
+            // 6. Form Submission Handling (Custom Modal instead of alert)
+            const form = document.getElementById('reservation-form');
+            const modal = document.getElementById('success-modal');
+            const modalContent = document.getElementById('modal-content');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+
+            function openModal() {
+                modal.classList.remove('hidden');
+                // Trigger reflow
+                void modal.offsetWidth;
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0');
+                modalContent.classList.remove('scale-100');
+                modalContent.classList.add('scale-95');
+                setTimeout(() => {
+                    modal.classList.add('hidden');
+                }, 300);
+            }
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                // Show custom success modal
+                openModal();
+                form.reset();
+            });
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if(e.target === modal) closeModal();
+            });
+        });
+    </script>
+</body>
+</html>
